@@ -47,7 +47,7 @@ This returns a JSON payload with the settings of the web app that underpins the 
 }
 ```
 
-In the above, the function is enabled as its Disabled status is *false*.
+In the above, the function is enabled as its Disabled status is *False*.
 
 ### Update the status of the web app
 This is done by doing a PUT HTTP request with the payload above, but its status must be set to *True* to disable the function.

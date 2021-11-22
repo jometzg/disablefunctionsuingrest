@@ -71,7 +71,9 @@ Content-Type: application/json
 If all is correct, this will return an HTTP 200 with the response that you set on the PUT request.
 
 To enable, the function again, do another PUT with the "AzureWebJobs.<function-name>.Disabled": "False".
-  
+
+ ### REST Client code
+ Visual Studio Code has a simple REST client extension. This can send basic HTTP requests and use the results from one requests to feed another. The rest client HTTP calls are in this repo under *enable-function.http*.
   
 # Summary
   To programmatically enable or disable a function via HTTP REST requires a service principal, which can then be used to authenticate against the management API of Azure and then update the status of the web app that hosts the function using an HTTP PUT request.

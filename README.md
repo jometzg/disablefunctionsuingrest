@@ -29,5 +29,49 @@ grant_type=client_credentials
 
 #### Use calls to management.azure.com to get and set the status of the function
 ```
+POST https://management.azure.com/subscriptions/<<subscription-id>>/resourceGroups/<<resource-group-name>>/providers/Microsoft.Web/sites/<function-app-name>>/config/appsettings/list?api-version=2020-12-01
+Authorization: Bearer <<bearer-token-from-above>>
+Content-Type: application/json
+```
+
+This returns a JSON payload with the settings of the web app that underpins the function
+```
+{
+  "id": "/subscriptions/<<subscription-id>>/resourceGroups/<<resource-group-name>>/providers/Microsoft.Web/sites/<function-app-name>>/config/appsettings",
+  "name": "appsettings",
+  "type": "Microsoft.Web/sites/config",
+  "location": "<<app-region-name",
+  "properties": {
+    "AzureWebJobs.<function-name>.Disabled": "False"
+  }
+}
+```
+
+In the above, the function is enabled as its Disabled status is *false*.
+
+### Update the status of the web app
+This is done by doing a PUT HTTP request with the payload above, but its status must be set to *True* to disable the function.
 
 ```
+PUT https://management.azure.com/subscriptions/<<subscription-id>>/resourceGroups/<<resource-group-name>>/providers/Microsoft.Web/sites/<function-app-name>>/config/appsettings?api-version=2020-12-01
+Authorization: Bearer <<bearer-token-from-above>>
+Content-Type: application/json
+
+{
+  "id": "/subscriptions/<<subscription-id>>/resourceGroups/<<resource-group-name>>/providers/Microsoft.Web/sites/<function-app-name>>/config/appsettings",
+  "name": "appsettings",
+  "type": "Microsoft.Web/sites/config",
+  "location": "West Europe",
+  "properties": {
+    "AzureWebJobs.<function-name>.Disabled": "True"
+  }
+}
+```
+
+If all is correct, this will return an HTTP 200 with the response that you set on the PUT request.
+
+To enable, the function again, do another PUT with the "AzureWebJobs.<function-name>.Disabled": "False".
+  
+  
+# Summary
+  To programmatically enable or disable a function via HTTP REST requires a service principal, which can then be used to authenticate against the management API of Azure and then update the status of the web app that hosts the function using an HTTP PUT request.

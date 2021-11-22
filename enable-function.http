@@ -1,0 +1,60 @@
+### set some variables
+
+@tenantid=<<tenant-id>>
+@clientid=<<client-id>>
+@secret=<<client-secret>>
+@subscriptionid=<<subscription-id>>
+@resource-group-name=test-rg
+@webappname=jjsimplefunc
+@functionname=BlobTrigger1
+@
+
+
+### get a bearer token 
+# @name login
+POST https://login.microsoftonline.com/{{tenantid}}/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientid}}&
+client_secret={{secret}}&
+resource=https://management.azure.com/&
+grant_type=client_credentials
+
+
+### call the management API with the bearer token to get the app settings
+# @name getsettings
+POST https://management.azure.com/subscriptions/{{subscriptionid}}/resourceGroups/{{resource-group-name}}/providers/Microsoft.Web/sites/{{webappname}}/config/appsettings/list?api-version=2020-12-01
+Authorization: Bearer {{login.response.body.access_token}}
+Content-Type: application/json
+
+### update the settings with a PUT to change the status
+# @name replacesettings
+PUT https://management.azure.com/subscriptions/{{subscriptionid}}/resourceGroups/{{resource-group-name}}/providers/Microsoft.Web/sites/{{webappname}}/config/appsettings?api-version=2020-12-01
+Authorization: Bearer {{login.response.body.access_token}}
+Content-Type: application/json
+
+{
+  "id": "{{getsettings.response.body.id}}",
+  "name": "{{getsettings.response.body.name}}",
+  "type": "{{getsettings.response.body.type}}",
+  "location": "{{getsettings.response.body.location}}",
+  "properties": {
+    "AzureWebJobs.BlobTrigger1.Disabled": "True"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
